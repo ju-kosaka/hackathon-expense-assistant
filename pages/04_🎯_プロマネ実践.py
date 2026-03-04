@@ -11,6 +11,9 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+    [data-testid="stSidebar"] {
+        display: none;
+    }
     .main-header {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         padding: 2rem;
