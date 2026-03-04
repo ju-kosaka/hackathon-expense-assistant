@@ -3,9 +3,14 @@ import yaml
 from pathlib import Path
 
 st.set_page_config(
-    page_title="目指せ！みのるんマスター！",
+    page_title="TOP - 目指せ！みのるんマスター！",
     page_icon="🎓",
-    layout="wide"
+    layout="wide",
+    menu_items={
+        'Get Help': None,
+        'Report a bug': None,
+        'About': None
+    }
 )
 
 st.markdown("""
