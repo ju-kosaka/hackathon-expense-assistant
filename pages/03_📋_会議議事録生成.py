@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import boto3
 import json
+from components import render_top_button, render_footer
 
 st.set_page_config(
     page_title="会議の議事録を自動生成",
@@ -45,6 +46,8 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+render_top_button()
 
 st.markdown("""
 <div class="main-header">
@@ -321,9 +324,4 @@ st.markdown("### 📚 参考リンク")
 st.markdown("- [参考記事: Claude Codeで月末業務を5分で終わらせる話](https://qiita.com/minorun365/items/114f53def8cb0db60f47)")
 st.markdown("- [OpenAI Whisper（音声認識）](https://openai.com/research/whisper)")
 
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #999; padding: 1rem;'>
-    <p>Powered by Claude AI | Hackathon MVP</p>
-</div>
-""", unsafe_allow_html=True)
+render_footer()

@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from datetime import datetime
+from components import render_top_button, render_footer
 
 st.set_page_config(
     page_title="経費精算アシスタント",
@@ -50,6 +51,8 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+render_top_button()
 
 st.markdown("""
 <div class="main-header">
@@ -138,9 +141,4 @@ with tabs[2]:
             if st.button("🚀 GitHub にpush", key="github"):
                 st.info("⚠️ GitHub連携は次のステップで実装します")
 
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #999; padding: 1rem;'>
-    <p>Powered by Claude AI | Hackathon MVP v0.1</p>
-</div>
-""", unsafe_allow_html=True)
+render_footer()

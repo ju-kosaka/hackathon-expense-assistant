@@ -1,4 +1,5 @@
 import streamlit as st
+from components import render_top_button, render_footer
 
 st.set_page_config(
     page_title="プチ仕様駆動開発を体験しよう",
@@ -54,6 +55,8 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+render_top_button()
 
 st.markdown("""
 <div class="main-header">
@@ -364,9 +367,4 @@ st.markdown("### 📚 参考リンク")
 st.markdown("- [参考記事: Claude Codeで月末業務を5分で終わらせる話](https://qiita.com/minorun365/items/114f53def8cb0db60f47)")
 st.markdown("- [このアプリのGitHubリポジトリ](https://github.com/ju-kosaka/hackathon-expense-assistant)")
 
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #999; padding: 1rem;'>
-    <p>Powered by Claude AI | Hackathon MVP</p>
-</div>
-""", unsafe_allow_html=True)
+render_footer()

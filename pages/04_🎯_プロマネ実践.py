@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import boto3
 import json
+from components import render_top_button, render_footer
 
 st.set_page_config(
     page_title="Claude Codeでプロマネをぶん回す",
@@ -84,6 +85,8 @@ st.markdown("""
     <p>フォルダ構造をハブにした開発プロマネの実践体験</p>
 </div>
 """, unsafe_allow_html=True)
+
+render_top_button()
 
 st.markdown("## この学習コンテンツでできること")
 
@@ -631,9 +634,4 @@ st.markdown("## 📚 参考リンク")
 st.markdown("- [参考記事: Claude Codeでプロマネをぶん回すやり方](https://x.com/minorun365)")
 st.markdown("- [Claude Code 公式ドキュメント](https://docs.anthropic.com/en/docs/claude-code)")
 
-st.markdown("---")
-st.markdown("""
-<div style='text-align: center; color: #999; padding: 1rem;'>
-    <p>Powered by Claude AI | Hackathon MVP</p>
-</div>
-""", unsafe_allow_html=True)
+render_footer()
