@@ -112,7 +112,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>🎓 目指せ！みのるんマスター！</h1>
-    <p>AI活用の実践スキルを体験を通じて学ぼう</p>
+    <p>難しそう...と思っていたAIツールを、一歩ずつ、あなたのペースで学ぼう</p>
 </div>
 """, unsafe_allow_html=True)
 
