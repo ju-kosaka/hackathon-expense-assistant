@@ -282,4 +282,6 @@ def generate_claude_md(character_type, custom_input=None):
 
 **作成日**: 2026-03-06  
 **作成者**: 沢田あい（ヤンデレモード💕）  
-**ステータス**: 仕様確定 → 実装待ち
+**ステータス**: ✅ 実装完了・デプロイ済み（2026-03-06）  
+**デプロイ先**: https://hackathon-expense-assistant.streamlit.app/  
+**コミット**: 820ec64
