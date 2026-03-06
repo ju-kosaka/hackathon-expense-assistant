@@ -153,17 +153,6 @@ for content in contents:
     
     st.markdown("<hr style='margin: 1.5rem 0; border: none; border-top: 1px solid #E0E0E0;'>", unsafe_allow_html=True)
 
-st.markdown("""
-<div class="hint-box">
-    <h3>💡 開発者向けヒント</h3>
-    <p>このアプリの学習コンテンツは <code>contents.yaml</code> で管理されています。</p>
-    <p>YAMLファイルを編集して、新しいコンテンツを追加してみましょう！</p>
-</div>
-""", unsafe_allow_html=True)
-
-github_url = "https://github.com/ju-kosaka/hackathon-expense-assistant/blob/main/contents.yaml"
-st.markdown(f"[📂 contents.yaml を GitHub で見る]({github_url})")
-
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #999; padding: 1rem;'>
