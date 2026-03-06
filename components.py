@@ -32,7 +32,7 @@ def render_top_button():
     with col3:
         st.markdown('<div class="floating-top-button">', unsafe_allow_html=True)
         if st.button("🏠 TOP", key="top_button", help="トップページに戻る"):
-            st.switch_page("🏠_TOP.py")
+            st.switch_page("app.py")
         st.markdown('</div>', unsafe_allow_html=True)
 
 def render_footer():
@@ -87,7 +87,7 @@ def render_footer():
     with col2:
         st.markdown('<div class="footer-button">', unsafe_allow_html=True)
         if st.button("TOPに戻る →", key="footer_top_button", help="トップページに戻る"):
-            st.switch_page("🏠_TOP.py")
+            st.switch_page("app.py")
         st.markdown('</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)

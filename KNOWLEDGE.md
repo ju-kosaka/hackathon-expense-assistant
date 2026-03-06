@@ -193,6 +193,112 @@ def fetch_qiita_article(article_id):
 
 ---
 
+## 📅 2026-03-06
+
+### 🔔 通知設定のコンテンツ化
+
+#### **教訓5: Claude Code Hooks設定の仕組み**
+
+**状況:**
+- Claude CodeのHooks機能（Notification、PostToolUse）を使った通知設定を学習コンテンツ化
+- `~/.claude/settings.json` で通知音（Purr含む）をカスタマイズする手順を整理
+
+**実装したもの:**
+1. **SPEC-notification.md**: 通知設定コンテンツの仕様書
+2. **pages/07_🔔_通知設定.py**: Streamlitページ
+3. **contents.yaml**: 新規コンテンツ（ID: 07）を追加
+
+**学んだこと:**
+
+##### 1. **settings.jsonの構造**
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "通知コマンド"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ツール実行後のコマンド"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+##### 2. **macOS通知の実装**
+```bash
+osascript -e 'display notification "メッセージ" with title "タイトル" sound name "Purr"'
+```
+- `osascript`: macOSのAppleScriptを実行するCLIツール
+- `display notification`: 通知センターに通知を表示
+- `sound name`: 通知音の指定（Purr、Basso、Hero、Pingなど）
+
+##### 3. **ログファイルの活用**
+```bash
+echo '[PostToolUse] '$(date) >> /tmp/claude_hooks.log && osascript -e '...'
+```
+- `&&`: 前のコマンドが成功したら次を実行
+- ログファイル（`/tmp/claude_hooks.log`）でHooksの動作確認ができる
+- デバッグ時に役立つ
+
+##### 4. **実際の設定例**
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[Notification] '$(date) >> /tmp/claude_hooks.log && osascript -e 'display notification \"Claude Code からの通知\" with title \"Claude Code\" sound name \"Purr\"'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '[PostToolUse] '$(date) >> /tmp/claude_hooks.log && osascript -e 'display notification \"ツールの実行が完了しました\" with title \"Claude Code\" sound name \"Purr\"'"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+**注意事項:**
+- macOS専用の機能（Windows/Linuxでは動作しない）
+- 既存の`settings.json`を上書きしないよう、バックアップを推奨
+- JSON形式のシンタックスエラーに注意（カンマ、クォート）
+
+**今後の拡張案:**
+- Windows/Linux向けの通知設定の追加
+- Hooksのその他の活用例（UserPromptSubmitなど）
+- 通知音のプレビュー再生機能
+
+**参考リンク:**
+- [Claude Code Hooks ドキュメント](https://docs.anthropic.com/en/docs/claude-code/)
+- [osascript マニュアル](https://ss64.com/osx/osascript.html)
+
+---
+
 **更新履歴:**
 - 2026-03-04: 初版作成（デプロイ・UI・Git関連の教訓）
 - 2026-03-05: Qiita記事取得方法を追加
+- 2026-03-06: 通知設定コンテンツの追加と実装方法を記録
