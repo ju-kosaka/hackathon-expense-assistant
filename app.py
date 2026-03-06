@@ -154,6 +154,6 @@ for content in contents:
 st.markdown("---")
 st.markdown("""
 <div style='text-align: center; color: #999; padding: 1rem;'>
-    <p>Powered by Claude AI | Hackathon MVP</p>
+    <p>Powered by Claude Code</p>
 </div>
 """, unsafe_allow_html=True)
