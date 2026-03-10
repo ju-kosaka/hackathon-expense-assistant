@@ -98,3 +98,30 @@ def test_content_about_auto_mode():
     
     assert len(found_keywords) > 0, \
         f"Auto Modeに関するキーワードが見つかりません。検索したキーワード: {keywords}"
+
+
+@pytest.mark.static
+def test_auto_mode_setup_text_not_refers_to_anthropic_docs():
+    """
+    Auto Mode有効化の説明が「公式ドキュメントを参照」と記載していないか
+    """
+    file_path = Path("pages/08_🤖_Auto Mode体験.py")
+    content = file_path.read_text(encoding='utf-8')
+    
+    assert "具体的な手順はAnthropicの公式ドキュメントを参照" not in content, \
+        "「具体的な手順はAnthropicの公式ドキュメントを参照」という記載が残っています"
+
+
+@pytest.mark.static
+def test_auto_mode_setup_text_mentions_research_preview():
+    """
+    Auto Mode有効化の説明が「リサーチプレビュー版」について言及しているか
+    """
+    file_path = Path("pages/08_🤖_Auto Mode体験.py")
+    content = file_path.read_text(encoding='utf-8')
+    
+    assert "リサーチプレビュー版" in content or "research preview" in content.lower(), \
+        "リサーチプレビュー版についての言及が見つかりません"
+    
+    assert "正式リリース後" in content or "正式版" in content, \
+        "正式リリース後についての言及が見つかりません"

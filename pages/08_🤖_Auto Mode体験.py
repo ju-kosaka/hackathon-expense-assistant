@@ -180,7 +180,7 @@ st.markdown("### Step 1: Auto Modeを有効にする")
 
 st.code("""
 # Claude Codeの設定で Auto Mode を有効化
-# (具体的な手順はAnthropicの公式ドキュメントを参照)
+# 現在はリサーチプレビュー版が公開されている段階のため、正式リリース後にコンテンツをアップデートします
 """, language="bash")
 
 st.markdown("### Step 2: タスクを依頼する")
