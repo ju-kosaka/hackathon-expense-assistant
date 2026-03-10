@@ -2,7 +2,7 @@
 
 **プロジェクト名**: 目指せ！みのるんマスター！  
 **サブタイトル**: Claude Code活用の体験型学習アプリ  
-**開発期間**: 2026年3月4日〜6日（3日間）  
+**開発期間**: 2026年3月4日〜6日（ハッカソン）、継続開発中  
 **デプロイURL**: https://hackathon-expense-assistant.streamlit.app/
 
 ---
@@ -17,7 +17,7 @@
    プロジェクト概要、開発背景、コンセプト、技術スタック
 
 2. **[02_learning-contents.md](./02_learning-contents.md)**  
-   学習コンテンツ設計（全7コンテンツの詳細）
+   学習コンテンツ設計（全8コンテンツの詳細）
 
 3. **[03_technical-learnings.md](./03_technical-learnings.md)**  
    技術的な学び（6つの教訓）
@@ -38,31 +38,35 @@
 **「目指せ！みのるんマスター！」** - Claude Code活用の体験型学習アプリ
 
 非エンジニアが**実際に手を動かしながら**AI活用を学べるWebアプリケーション。
-みのるん氏（@minorun365）のブログ記事を参考に、Claude Codeの活用方法を7つの学習コンテンツで体験できる。
+みのるん氏（@minorun365）のブログ記事やITmedia記事を参考に、Claude Codeの活用方法を8つの学習コンテンツで体験できる。
 
 ### 主な成果
-- ✅ **7つの学習コンテンツを実装**（VSCode設定、仕様駆動開発、通知設定など）
+- ✅ **8つの学習コンテンツを実装**（VSCode設定、仕様駆動開発、通知設定、Auto Modeなど）
 - ✅ **YAMLベースのコンテンツ管理**で、非エンジニアでも追加可能
 - ✅ **Streamlit Community Cloudにデプロイ**し、誰でもアクセス可能
 - ✅ **プチ仕様駆動開発**を実践し、PLAN/SPEC/TODO/KNOWLEDGEを完備
-- ✅ **6つの技術的教訓**を記録し、次のプロジェクトに活かせる知見を蓄積
+- ✅ **12の技術的教訓**を記録し、次のプロジェクトに活かせる知見を蓄積
+- ✅ **TDDメソッド（pytest + Playwright）を導入**、テストファースト開発を実践
 
 ### 学びのハイライト
 1. **本番環境優先の開発**：ローカルの完璧さより、まず動くものを作る
 2. **フォルダ構成のルール化**：docs/specs、docs/project、scripts/で整理
 3. **外部API活用**：Qiita API v2でMarkdown形式のコンテンツ取得
 4. **通知機能の実装**：osascriptでmacOS通知をカスタマイズ
+5. **TDDメソッドの導入**：Red→Green→Refactorサイクルで品質保証
+6. **コスト管理の徒底**：ハッカソン予算（3万円）の管理体制構築
 
 ---
 
 ## 📊 主要な数値
 
-- **開発期間**: 3日間
-- **学習コンテンツ数**: 7本
+- **開発期間**: ハッカソン3日間 + 継続開発（4日）
+- **学習コンテンツ数**: 8本（合計155分）
 - **仕様書数**: 4本（SPEC.md + SPEC-{vscode-setup, setcharacter, notification}.md）
-- **技術的教訓**: 6つ（KNOWLEDGE.mdに記録）
-- **コミット数**: 15回以上
-- **使用技術**: Python, Streamlit, Claude Code, YAML, Markdown
+- **技術的教訓**: 12つ（KNOWLEDGE.mdに記録）
+- **テストケース**: 12件（静的テスト6 + ビジュアルテスト6）
+- **コミット数**: 20回以上
+- **使用技術**: Python, Streamlit, Claude Code, YAML, Markdown, pytest, Playwright
 
 ---
 

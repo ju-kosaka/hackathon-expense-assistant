@@ -490,6 +490,104 @@ Claude Code: 「教訓6として追加しました」
 
 ---
 
+## 🧪 TDDメソッドの追加（2026-03-10）
+
+### 背景
+
+ハッカソン終了後、コンテンツ08（Auto Mode体験）の追加時に、**Test-Driven Development（TDD）** を導入しました。
+「テストを先に書く」という原則を徹底することで、品質を担保する開発プロセスを確立しました。
+
+### プロセスの進化
+
+**ハッカソン期間（3/4-3/6）:**
+```
+PLAN.md作成 → SPEC.md作成 → 実装 → 動作確認 → デプロイ
+```
+
+**TDD導入後（3/10〜）:**
+```
+SPEC.md作成 → コスト確認 → 🔴Red: テスト作成 → 🟢Green: 実装 → 🔵Refactor → デプロイ
+```
+
+### TDDサイクルの実践
+
+#### 1. 🔴 Red（失敗するテストを先に書く）
+
+**作成したテスト:**
+- `tests/test_08_auto_mode_static.py`（6テスト）
+- `tests/test_08_auto_mode_visual.py`（6テスト）
+
+**Red確認方法:**
+```bash
+# 実装を一時退避
+git stash
+
+# テストを実行（失敗することを確認）
+pytest tests/test_08_auto_mode_static.py -v
+# AssertionError: ページファイル 08_🤖_Auto Mode体験.py が見つかりません
+```
+
+#### 2. 🟢 Green（テストを通す最小限の実装）
+
+**実装:**
+- `pages/08_🤖_Auto Mode体験.py`（301行）
+
+**Green確認:**
+```bash
+# 実装を復元
+git stash pop
+
+# テストを実行（成功することを確認）
+pytest tests/test_08_auto_mode_static.py -v
+# 6 passed in 0.01s
+
+pytest tests/test_08_auto_mode_visual.py -v -m ui
+# 6 passed in 14.89s
+```
+
+#### 3. 🔵 Refactor（リファクタリング）
+
+**実施した改善:**
+- Playwrightのセレクタ最適化（strict mode violation解消）
+- タイムアウト時間の調整（15秒）
+- スクロール処理の追加（フッターボタン検証）
+
+### 今後のプロセス
+
+**新規コンテンツ追加時の標準フロー:**
+
+```markdown
+1. SPEC.md作成（docs/specs/SPEC-<機能名>.md）
+2. コスト確認チェックリスト実施（KNOWLEDGE.md参照）
+3. ハッカソン予算（3万円）の残額確認
+4. 🔴 Red: テストを先に作成
+   - tests/test_XX_<name>_static.py
+   - tests/test_XX_<name>_visual.py
+5. Red確認: テストを実行（失敗を確認）
+6. 🟢 Green: 実装
+   - pages/XX_絵文字_<名前>.py
+   - contents.yamlにエントリ追加
+7. Green確認: テストを実行（成功を確認）
+8. 🔵 Refactor: コードの改善
+9. 実装後のコスト確認（累計コストを記録）
+10. Git commit & push（ページ + テスト + SPEC）
+11. 本番環境で動作確認
+```
+
+### 学んだこと
+
+#### テストファーストの効果
+- **設計の改善**: テストを書くことで、実装すべき機能が明確になる
+- **リグレッション防止**: 既存機能が壊れていないことを保証
+- **ドキュメント代わり**: テストコードが仕様書の役割を果たす
+
+#### チームへの展開
+- **コスト意識**: テスト実装前にコスト確認を徹底
+- **SPECファイル**: 何を作るか、どう作ったかを記録
+- **予算管理**: ハッカソン予算（3万円）の残額を常に把握
+
+---
+
 ## 📚 参考文献
 
 - [Claude Codeで月末業務を5分で終わらせる話 - Qiita](https://qiita.com/minorun365/items/114f53def8cb0db60f47)

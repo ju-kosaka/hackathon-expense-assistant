@@ -532,6 +532,229 @@ hackathon-app/
    - サイドバー非表示
    - クリーンなUI設計
 
+### 品質保証・テスト
+
+7. **TDDメソッド（Test-Driven Development）の導入**（2026-03-10）
+   - pytest + Playwright の統合
+   - Red → Green → Refactor サイクル
+   - 静的解析テスト + ビジュアルテストの併用
+
+---
+
+## 🧪 教訓7: TDDメソッドの導入（2026-03-10）
+
+### 背景
+
+コンテンツ08（Auto Mode体験）の追加時に、**Test-Driven Development（TDD）** を導入しました。
+通称「twadaメソッド」として知られる、テストファースト開発の実践です。
+
+**きっかけ:**
+- Plan modeページのUI修正時、テストを書かずに実装してしまった
+- ユーザーから「テストを先に書く癖をつけてほしい」と指摘を受けた
+
+### TDDサイクル
+
+```
+🔴 Red（失敗するテストを先に書く）
+   ↓
+🟢 Green（テストを通す最小限の実装）
+   ↓
+🔵 Refactor（リファクタリング）
+   ↓
+   繰り返し
+```
+
+### 実装内容
+
+#### 1. テスト環境のセットアップ
+
+```bash
+# pytest + Playwright をインストール
+pip install pytest pytest-playwright playwright
+playwright install
+```
+
+**pytest.ini の設定:**
+```ini
+[pytest]
+testpaths = tests
+python_files = test_*.py
+
+addopts =
+    -v
+    --tb=short
+    --strict-markers
+    --disable-warnings
+
+markers =
+    static: Static code analysis tests
+    ui: UI rendering tests with Playwright
+    slow: Slow running tests
+```
+
+#### 2. テストの種類
+
+**静的解析テスト (`tests/test_08_auto_mode_static.py`):**
+- ファイルの存在確認
+- CSS クラスの定義確認
+- HTML 構造の検証
+- import 文の確認
+
+```python
+@pytest.mark.static
+def test_main_header_style_exists():
+    """
+    メインヘッダーのCSSスタイルが定義されているか
+    """
+    file_path = Path("pages/08_🤖_Auto Mode体験.py")
+    content = file_path.read_text(encoding='utf-8')
+    
+    assert ".main-header" in content
+    assert "background: linear-gradient" in content
+```
+
+**ビジュアルテスト (`tests/test_08_auto_mode_visual.py`):**
+- ページのレンダリング確認
+- グラデーション背景の検証
+- ボタンのナビゲーション確認
+- サイドバー非表示の確認
+- スクリーンショット取得（ビジュアルリグレッション）
+
+```python
+@pytest.mark.ui
+def test_main_header_has_gradient(page: Page):
+    """
+    メインヘッダーにグラデーション背景が適用されているか
+    """
+    page.goto("http://localhost:8501/Auto_Mode体験")
+    main_header = page.locator(".main-header")
+    expect(main_header).to_be_visible(timeout=15000)
+    
+    background = main_header.evaluate("el => getComputedStyle(el).backgroundImage")
+    assert "linear-gradient" in background
+```
+
+#### 3. TDD実践の流れ
+
+**🔴 Red フェーズ:**
+1. テストファイルを先に作成（6 static + 6 visual = 12 tests）
+2. `git stash` で実装を一時退避
+3. テストを実行 → **FAILED** を確認
+
+```bash
+pytest tests/test_08_auto_mode_static.py -v
+# AssertionError: ページファイル 08_🤖_Auto Mode体験.py が見つかりません
+```
+
+**🟢 Green フェーズ:**
+1. `git stash pop` で実装を復元
+2. `pages/08_🤖_Auto Mode体験.py` を実装（301行）
+3. テストを実行 → **PASSED** を確認（12/12 tests）
+
+```bash
+pytest tests/test_08_auto_mode_static.py -v
+# 6 passed in 0.01s
+
+pytest tests/test_08_auto_mode_visual.py -v -m ui
+# 6 passed in 14.89s
+```
+
+**🔵 Refactor フェーズ:**
+- Playwright のセレクタを最適化（strict mode violation の修正）
+- タイムアウト時間の調整（15秒）
+- スクロール処理の追加（フッターボタン検証）
+
+### 学んだこと
+
+#### 1. **テストファーストの効果**
+- **設計の改善**: テストを書くことで、実装すべき機能が明確になる
+- **リグレッション防止**: 既存機能が壊れていないことを保証
+- **ドキュメント代わり**: テストコードが仕様書の役割を果たす
+
+#### 2. **Playwright の有効性**
+- **実ブラウザでのテスト**: 実際のユーザー体験を検証できる
+- **スクリーンショット**: ビジュアルリグレッションを検出
+- **クロスブラウザ対応**: Chromium, Firefox, WebKit で検証可能
+
+#### 3. **静的テスト + ビジュアルテストの併用**
+- **静的テスト**: 高速（0.01秒）、コード構造の検証
+- **ビジュアルテスト**: 実UI確認（14.89秒）、ユーザー視点の検証
+- **組み合わせ**: 両方実施することで品質を担保
+
+#### 4. **テストの粒度**
+- ページ全体で12テスト（静的6 + ビジュアル6）
+- 1テストあたり1つの関心事を検証
+- 失敗時のエラーメッセージを具体的に
+
+### トラブルと解決
+
+#### 問題1: Strict Mode Violation
+**エラー:**
+```
+Error: strict mode violation: get_by_text("🏠 TOP") resolved to 2 elements
+```
+
+**原因:** TOPボタンが2箇所（ヘッダー + フッター）に存在
+
+**解決策:**
+```python
+# Before:
+top_button = page.get_by_text("🏠 TOP")
+
+# After:
+top_button = page.get_by_role("button", name="🏠 TOP")
+```
+
+#### 問題2: フッターボタンが見つからない
+**原因:** ページが長く、フッターが画面外
+
+**解決策:**
+```python
+# ページ最下部までスクロール
+page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
+page.wait_for_timeout(1000)
+
+footer_button = page.get_by_role("button").filter(has_text="TOP").last
+```
+
+### 今後の展開
+
+#### 既存ページへのテスト追加
+現在、テストがあるのはコンテンツ08のみ。今後は：
+- コンテンツ01〜07にもテストを追加（推定6-8時間）
+- カバレッジ目標: 80%以上
+- CI/CD統合（GitHub Actions）
+
+#### テストの種類拡充
+- **パフォーマンステスト**: ページ読み込み時間の計測
+- **アクセシビリティテスト**: WCAG準拠の確認
+- **モバイルテスト**: レスポンシブデザインの検証
+
+### コスト確認
+
+**Playwright導入のコスト:**
+- ✅ ローカル実行: 無料
+- ✅ ブラウザバイナリ: 254.4 MB（初回のみ）
+- ⚠️ CI/CD実行: GitHub Actionsでpublicリポジトリなら無制限
+
+**今後の注意点:**
+- CI/CD導入前にコスト試算
+- 実行時間の最適化（並列実行など）
+- 外部サービス（Percy等）は導入前に無料枠を確認
+
+### 参考リンク
+- [pytest 公式ドキュメント](https://docs.pytest.org/)
+- [Playwright 公式ドキュメント](https://playwright.dev/)
+- [TDD（Test-Driven Development）入門](https://t-wada.hatenablog.jp/entry/tdd-live-coding)
+
+---
+
+### UI/UX
+
+6. **CSS活用**（教訓2）
+   - サイドバー非表示
+   - クリーンなUI設計
+
 ---
 
 ## 📚 参考リンク
