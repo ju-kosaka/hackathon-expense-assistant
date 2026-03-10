@@ -1,6 +1,7 @@
 import streamlit as st
 import yaml
 from pathlib import Path
+from typing import List, Dict, Any
 
 st.set_page_config(
     page_title="目指せ！みのるんマスター！",
@@ -116,18 +117,85 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-def load_contents():
-    yaml_path = Path(__file__).parent / "contents.yaml"
-    with open(yaml_path, 'r', encoding='utf-8') as f:
-        data = yaml.safe_load(f)
-    return data['contents']
+def load_contents() -> List[Dict[str, Any]]:
+    """
+    contents.yamlから学習コンテンツ一覧を読み込む
+    
+    Returns:
+        List[Dict[str, Any]]: コンテンツ情報のリスト
+        
+    Raises:
+        なし（エラー時は空リストを返し、ユーザーにエラーメッセージを表示）
+    """
+    try:
+        yaml_path = Path(__file__).parent / "contents.yaml"
+        
+        if not yaml_path.exists():
+            st.error("⚠️ contents.yamlが見つかりません")
+            st.info("💡 プロジェクトルートにcontents.yamlファイルが必要です")
+            return []
+        
+        with open(yaml_path, 'r', encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+        
+        if not data:
+            st.error("⚠️ contents.yamlが空です")
+            return []
+        
+        if 'contents' not in data:
+            st.error("⚠️ contents.yamlの形式が不正です")
+            st.info("💡 'contents'キーが必要です")
+            return []
+        
+        if not isinstance(data['contents'], list):
+            st.error("⚠️ 'contents'はリスト形式である必要があります")
+            return []
+        
+        return data['contents']
+        
+    except yaml.YAMLError as e:
+        st.error(f"❌ YAML解析エラー: {str(e)}")
+        st.info("💡 contents.yamlの構文を確認してください")
+        return []
+    except PermissionError:
+        st.error("❌ contents.yamlの読み取り権限がありません")
+        return []
+    except Exception as e:
+        st.error(f"❌ 予期しないエラーが発生しました: {str(e)}")
+        return []
 
-def get_difficulty_stars(difficulty):
-    return "⭐" * difficulty
+def get_difficulty_stars(difficulty: int) -> str:
+    """
+    難易度を星マークに変換する
+    
+    Args:
+        difficulty: 難易度（1-3の整数）
+        
+    Returns:
+        str: 星マーク文字列（例: "⭐⭐"）
+    """
+    try:
+        if not isinstance(difficulty, int):
+            return "⭐"
+        
+        if difficulty < 1:
+            return "⭐"
+        
+        if difficulty > 3:
+            return "⭐" * 3
+        
+        return "⭐" * difficulty
+        
+    except Exception:
+        return "⭐"
 
 contents = load_contents()
 
-st.markdown("### 📚 学習コンテンツ一覧")
+if not contents:
+    st.warning("📚 表示できる学習コンテンツがありません")
+    st.info("💡 contents.yamlの設定を確認してください")
+else:
+    st.markdown("### 📚 学習コンテンツ一覧")
 
 for content in contents:
     col1, col2 = st.columns([1, 9])
