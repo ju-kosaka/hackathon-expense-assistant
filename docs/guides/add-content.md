@@ -190,11 +190,156 @@ streamlit run app.py
 
 ---
 
-### ステップ5: GitHubにpush
+### ステップ5: テストを書く（TDDメソッド - 重要！）
+
+**⚠️ 重要な開発ルール:**
+- **実装前にテストを書く**（Red → Green → Refactor）
+- テストを書かずに実装してはいけない
+
+#### テストの種類
+
+1. **静的解析テスト** - CSSスタイル・HTML構造の検証
+2. **ビジュアルテスト** - Playwrightで実際のブラウザでの見た目を検証
+
+#### テストファイルの作成
+
+**ファイル名の形式:**
+```
+tests/test_XX_page_name_static.py  # 静的解析テスト
+tests/test_XX_page_name_visual.py  # ビジュアルテスト
+```
+
+例:
+```
+tests/test_05_design_practice_static.py
+tests/test_05_design_practice_visual.py
+```
+
+#### 静的解析テストの例
+
+```python
+"""
+デザイン実践ページの静的解析テスト
+"""
+import pytest
+from pathlib import Path
+
+
+@pytest.mark.static
+def test_main_header_style_exists():
+    """
+    メインヘッダーのCSSスタイルが定義されているか
+    """
+    file_path = Path("pages/05_🎨_デザイン実践.py")
+    content = file_path.read_text(encoding='utf-8')
+    
+    assert ".main-header" in content, \
+        "CSSクラス .main-header が見つかりません"
+    
+    assert "background: linear-gradient" in content, \
+        "グラデーション背景が設定されていません"
+
+
+@pytest.mark.static
+def test_render_functions_imported():
+    """
+    render_top_button と render_footer がimportされているか
+    """
+    file_path = Path("pages/05_🎨_デザイン実践.py")
+    content = file_path.read_text(encoding='utf-8')
+    
+    assert "from components import render_top_button, render_footer" in content, \
+        "render_top_button と render_footer がimportされていません"
+    
+    assert "render_top_button()" in content, \
+        "render_top_button() が呼び出されていません"
+    
+    assert "render_footer()" in content, \
+        "render_footer() が呼び出されていません"
+```
+
+#### ビジュアルテストの例
+
+```python
+"""
+デザイン実践ページのビジュアルテスト（Playwright）
+"""
+import pytest
+from playwright.sync_api import Page, expect
+
+
+@pytest.mark.ui
+def test_page_renders_successfully(page: Page):
+    """
+    ページが正常にレンダリングできるか
+    """
+    page.goto("http://localhost:8501/デザイン実践")
+    
+    # ページタイトルが表示されるまで待つ
+    page.wait_for_selector("h1", timeout=15000)
+    
+    # ページタイトルが存在するか確認
+    title = page.locator("h1")
+    expect(title).to_be_visible()
+
+
+@pytest.mark.ui
+def test_top_button_navigation(page: Page):
+    """
+    TOPボタンが正しく動作するか
+    """
+    page.goto("http://localhost:8501/デザイン実践")
+    
+    # TOPボタンをクリック
+    top_button = page.get_by_text("🏠 TOP")
+    expect(top_button).to_be_visible(timeout=15000)
+    top_button.click()
+    
+    # TOPページに遷移したか確認
+    page.wait_for_url("http://localhost:8501", timeout=5000)
+```
+
+#### TDDサイクルの実践
+
+1. **🔴 Red（失敗するテストを書く）**
+   ```bash
+   # 実装前にテストを実行（失敗することを確認）
+   pytest tests/test_05_design_practice_static.py -v
+   ```
+
+2. **🟢 Green（テストを通す最小限の実装）**
+   ```bash
+   # ページを実装
+   # 再度テストを実行（成功することを確認）
+   pytest tests/test_05_design_practice_static.py -v
+   ```
+
+3. **🔵 Refactor（リファクタリング）**
+   - コードの改善（テストが通ることを確認しながら）
+
+#### テスト実行コマンド
 
 ```bash
-git add -A
-git commit -m "Add new learning content: XXX"
+# 静的解析テストのみ実行
+pytest tests/ -m static -v
+
+# ビジュアルテストのみ実行
+pytest tests/ -m ui -v
+
+# 全テスト実行
+pytest tests/ -v
+
+# 特定のファイルのみ実行
+pytest tests/test_05_design_practice_static.py -v
+```
+
+---
+
+### ステップ6: GitHubにpush
+
+```bash
+git add pages/XX_絵文字_ページ名.py contents.yaml tests/
+git commit -m "Add new learning content: XXX with tests"
 git push origin main
 ```
 
@@ -275,19 +420,50 @@ background: linear-gradient(90deg, #E3F2FD 0%, #F3E5F5 100%);
 
 **対処法**: `st.markdown("""<style>...</style>""")` にサイドバー非表示CSSを追加
 
+### エラー4: テストが失敗する（Red → Greenできない）
+
+**原因**: 実装がテストの期待値と一致していない
+
+**対処法**: 
+1. テストのエラーメッセージを確認
+2. ファイル内容を確認（CSSクラス名、import文、関数呼び出しなど）
+3. `pytest tests/test_XX_*.py -v` で詳細なエラーを確認
+
+### エラー5: Playwrightテストがタイムアウト
+
+**原因**: Streamlitアプリが起動していない、または要素の読み込みが遅い
+
+**対処法**:
+```bash
+# 別ターミナルでStreamlitアプリを起動
+streamlit run app.py
+
+# タイムアウトを延長
+page.wait_for_selector("h1", timeout=15000)  # 15秒に延長
+```
+
 ---
 
 ## ✅ チェックリスト
 
 新しいコンテンツを追加する際は、以下をチェックしてください:
 
+### 実装前
 - [ ] `contents.yaml` にエントリを追加した
+- [ ] テストファイルを作成した（`tests/test_XX_*_static.py`, `tests/test_XX_*_visual.py`）
+- [ ] 🔴 Red: テストを実行して失敗することを確認した
+
+### 実装中
 - [ ] `pages/XX_絵文字_ページ名.py` を作成した
-- [ ] `from components import render_top_button` をimportした
+- [ ] `from components import render_top_button, render_footer` をimportした
 - [ ] サイドバー非表示CSSを追加した
-- [ ] `render_top_button()` を呼び出した
+- [ ] `render_top_button()` を呼び出した（ヘッダーの前）
+- [ ] `render_footer()` を呼び出した（ページの最後）
+
+### 実装後
+- [ ] 🟢 Green: テストを実行して成功することを確認した
 - [ ] ローカルで動作確認した（トップ→ページ→トップの遷移）
-- [ ] GitHubにpushした
+- [ ] GitHubにpushした（ページ + テストファイル）
 - [ ] 本番環境で動作確認した
 
 ---
@@ -314,3 +490,4 @@ background: linear-gradient(90deg, #E3F2FD 0%, #F3E5F5 100%);
 
 **更新履歴:**
 - 2026-03-05: 初版作成
+- 2026-03-10: TDDメソッド（twadaメソッド）とテスト手順を追加
