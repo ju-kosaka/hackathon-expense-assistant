@@ -51,6 +51,15 @@ st.markdown("""
         border-radius: 10px;
         margin: 1rem 0;
     }
+    .file-structure {
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        padding: 1.5rem;
+        border-radius: 8px;
+        font-family: 'Courier New', monospace;
+        margin: 1rem 0;
+        border: 1px solid #3c3c3c;
+    }
     .highlight-box {
         background-color: #FFF9C4;
         border-left: 5px solid #FBC02D;
@@ -161,14 +170,12 @@ st.markdown("""
 Claude Codeでは、`.claude/` ディレクトリに `plan_output_style.md` ファイルを配置することで、計画フォーマットをカスタマイズできます。
 """)
 
+st.markdown("#### 📁 ファイル配置場所")
 st.markdown("""
-<div class="step-box">
-    <h4>📁 ファイル配置場所</h4>
-    <code>
-    プロジェクトルート/<br>
-    └── .claude/<br>
-    &nbsp;&nbsp;&nbsp;&nbsp;└── plan_output_style.md
-    </code>
+<div class="file-structure">
+プロジェクトルート/<br>
+└── .claude/<br>
+&nbsp;&nbsp;&nbsp;&nbsp;└── plan_output_style.md
 </div>
 """, unsafe_allow_html=True)
 
