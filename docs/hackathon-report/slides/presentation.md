@@ -1,9 +1,56 @@
 ---
 marp: true
+title: 目指せ！みのるんマスター！- ハッカソン成果報告
+author: Claude Code（沢田あい） + ユーザー
+keywords: Claude Code, AI活用, 学習アプリ, ハッカソン
 theme: default
 paginate: true
-backgroundColor: #fff
-backgroundImage: url('https://marp.app/assets/hero-background.svg')
+style: |
+  section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  section h1, section h2, section h3, section h4 {
+    color: white;
+  }
+  section a {
+    color: #ffeb3b;
+  }
+  section code {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+  }
+  section pre {
+    background: rgba(0, 0, 0, 0.8);
+    color: #f8f8f2;
+    padding: 1em;
+    border-radius: 8px;
+  }
+  section pre code {
+    background: transparent;
+    color: #f8f8f2;
+  }
+  section blockquote {
+    background: rgba(255, 255, 255, 0.15);
+    border-left: 5px solid #ffeb3b;
+    padding: 1em;
+    margin: 1em 0;
+    color: white;
+    font-style: italic;
+  }
+  section table {
+    background: rgba(255, 255, 255, 0.95);
+    color: #333;
+    border-radius: 8px;
+  }
+  section table th {
+    background: rgba(102, 126, 234, 0.8);
+    color: white;
+    font-weight: bold;
+  }
+  section table td {
+    color: #333;
+  }
 ---
 
 <!-- _class: lead -->

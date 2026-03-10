@@ -14,3 +14,6 @@ build/
 .DS_Store
 *.log
 .streamlit/secrets.toml
+
+# Marp出力ファイル（スクリプトで生成するため除外）
+docs/hackathon-report/slides/output/
