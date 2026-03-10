@@ -187,37 +187,45 @@ bedrock = boto3.client(
 
 ---
 
-### 3. ユニットテストが全く存在しない
+### 3. ユニットテストが全く存在しない ⏳ 一部対応中（2026-03-10）
 
-**問題点:**
-- すべての関数がテストされていない
-- リグレッション（機能劣化）の検出ができない
-- リファクタリング時の安全性が低い
+#### 対応状況
 
-**影響:**
-- バグの早期発見ができない
-- コード変更時の影響範囲が不明
-- 本番環境でのエラー発生リスクが高い
+**✅ 完了した作業:**
+1. **テスト環境構築**
+   - pytest + Playwright 導入完了
+   - pytest.ini 設定完了
+   - requirements.txt に依存関係追加
 
-**推奨対応:**
+2. **Plan modeページのテスト実装（TDDメソッド）**
+   - 静的解析テスト: 4テスト（CSS・HTML構造の検証）
+   - ビジュアルテスト: 6テスト（Playwright）
+   - 全10テスト PASSED（8.39秒）
+   - スクリーンショットテストでビジュアルリグレッション防止
 
-#### 最優先テスト対象
-1. `app.py::load_contents()` - YAML読み込み
-2. `pages/03_📋_会議議事録生成.py::generate_minutes()` - 議事録生成（AWS連携）
-
-#### テストファイル構成案
+**テストファイル構成（現状）:**
 ```
 hackathon-app/
 ├── tests/
 │   ├── __init__.py
-│   ├── test_app.py
-│   ├── test_components.py
-│   └── test_meeting_minutes.py
+│   ├── test_playwright_setup.py       # Playwright環境確認
+│   ├── test_plan_mode_ui_static.py    # Plan modeページ（静的解析）
+│   ├── test_plan_mode_ui_visual.py    # Plan modeページ（ビジュアル）
+│   └── snapshots/
+│       └── file-structure.png
 ├── pytest.ini
-└── requirements-dev.txt
+└── requirements.txt (pytest, playwright追加済み)
 ```
 
-#### `tests/test_app.py` の例
+**⏳ 今後の対応予定:**
+
+#### 最優先テスト対象（未実装）
+1. `app.py::load_contents()` - YAML読み込み
+2. `app.py::get_difficulty_stars()` - 難易度表示
+3. `pages/03_📋_会議議事録生成.py::generate_minutes()` - 議事録生成（AWS連携）
+4. 他の6ページのUIテスト
+
+#### `tests/test_app.py` の例（未実装）
 ```python
 import pytest
 from pathlib import Path
@@ -236,11 +244,7 @@ def test_get_difficulty_stars():
     assert get_difficulty_stars(3) == "⭐⭐⭐"
 ```
 
-#### `requirements-dev.txt`
-```
-pytest>=7.0.0
-pytest-cov>=4.0.0
-```
+**推定残作業時間:** 6-8時間
 
 ---
 
@@ -440,20 +444,22 @@ st.markdown(f"<div>{user_input}</div>", unsafe_allow_html=True)
 
 ## 📋 対応優先順位まとめ
 
-| 優先度 | 項目 | 工数目安 | 影響度 |
-|:---:|:---|:---:|:---:|
-| 🔴高 | 1. エラーハンドリング追加 | 2h | 大 |
-| 🔴高 | 2. AWS設定の環境変数化 | 1h | 大 |
-| 🔴高 | 3. ユニットテスト作成 | 8h | 大 |
-| 🟡中 | 4. CSS共通化 | 3h | 中 |
-| 🟡中 | 5. プロンプト外部ファイル化 | 1h | 中 |
-| 🟡中 | 6. ロギング追加 | 2h | 中 |
-| 🟢低 | 7. 型ヒント追加 | 4h | 小 |
-| 🟢低 | 8. Docstring充実 | 3h | 小 |
-| 🟢低 | 9. マジックナンバー削減 | 1h | 小 |
-| 🟢低 | 10. セキュリティ改善 | 2h | 小 |
+| 優先度 | 項目 | 工数目安 | 進捗 | 影響度 |
+|:---:|:---|:---:|:---:|:---:|
+| 🔴高 | 1. エラーハンドリング追加 | 2h | ✅ 完了 | 大 |
+| 🔴高 | 2. AWS設定の環境変数化 | 1h | ⏸️ 保留 | 大 |
+| 🔴高 | 3. ユニットテスト作成 | 8h | ⏳ 30%完了 | 大 |
+| 🟡中 | 4. CSS共通化 | 3h | 未着手 | 中 |
+| 🟡中 | 5. プロンプト外部ファイル化 | 1h | 未着手 | 中 |
+| 🟡中 | 6. ロギング追加 | 2h | 未着手 | 中 |
+| 🟢低 | 7. 型ヒント追加 | 4h | 未着手 | 小 |
+| 🟢低 | 8. Docstring充実 | 3h | 未着手 | 小 |
+| 🟢低 | 9. マジックナンバー削減 | 1h | 未着手 | 小 |
+| 🟢低 | 10. セキュリティ改善 | 2h | 未着手 | 小 |
 
-**合計工数**: 約27時間
+**合計工数**: 約27時間  
+**完了工数**: 約4.4時間（16%）  
+**残作業工数**: 約22.6時間
 
 ---
 
@@ -464,8 +470,8 @@ st.markdown(f"<div>{user_input}</div>", unsafe_allow_html=True)
 2. AWS設定の環境変数化（1h）
 
 ### Phase 2: テスト基盤構築（優先度：高）
-3. ユニットテスト環境構築（2h）
-4. 主要関数のテスト作成（6h）
+3. ✅ ユニットテスト環境構築（2h） - **完了**
+4. ⏳ 主要関数のテスト作成（6h） - **30%完了（Plan modeページのみ）**
 
 ### Phase 3: 保守性向上（優先度：中）
 5. CSS共通化（3h）
