@@ -1,7 +1,5 @@
 import streamlit as st
 import os
-import boto3
-import json
 from components import render_top_button, render_footer
 
 st.set_page_config(
@@ -53,6 +51,14 @@ st.markdown("""
 <div class="main-header">
     <h1>📋 会議の議事録を自動生成</h1>
     <p>文字起こしデータから構造化された議事録とネクストアクションを生成</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+<div class="warning-box">
+    ⚠️ <strong>このコンテンツは現在休止中です</strong><br>
+    AWS Bedrock APIの使用により課金が発生するため、実行機能を無効化しています。<br>
+    ページの内容は学習用として閲覧可能です。
 </div>
 """, unsafe_allow_html=True)
 
@@ -149,84 +155,11 @@ st.markdown("---")
 st.markdown("## ステップ4: 議事録を生成")
 
 def generate_minutes(transcript: str, domains: str = "", participants: str = "") -> str:
-    """AWS Bedrock (Claude) を使って議事録を生成"""
-    
-    # AWS Bedrock クライアント作成
-    try:
-        bedrock = boto3.client(
-            service_name='bedrock-runtime',
-            region_name='us-east-1'
-        )
-    except Exception as e:
-        st.error(f"⚠️ AWS Bedrock への接続に失敗しました: {str(e)}")
-        return None
-    
-    # プロンプト構築
-    prompt = f"""あなたは優秀な議事録作成アシスタントです。以下の文字起こしデータから、構造化された議事録を生成してください。
+    """議事録生成機能（現在無効化中）"""
+    st.warning("⚠️ この機能は課金が発生するため、現在無効化されています。")
+    return None
 
-【専門領域】
-{domains if domains else "指定なし"}
-
-【参加者】
-{participants if participants else "文字起こしから推測してください（カタカナ表記）"}
-
-【文字起こしデータ】
-{transcript}
-
-【指示】
-1. フィラー（「えー」「あの」「その」等）を削除
-2. 専門用語を正しく認識・整形（専門領域の知識を活用）
-3. 参加者名は推測する場合カタカナ表記
-4. ネクストアクションを3つ抽出
-
-【出力フォーマット】
-# 議事録
-
-## 会議概要
-- **日時**: [推測または記載]
-- **参加者**: [名前をカンマ区切り]
-- **テーマ**: [会議のテーマ]
-
-## 議論内容
-
-[フィラーを除去し、専門用語を正しく整形した議論内容を記載]
-
-## ネクストアクション
-
-1. [アクション1]（担当: [名前]）
-2. [アクション2]（担当: [名前]）
-3. [アクション3]（担当: [名前]）
-
-## 備考
-- フィラー除去済み
-- 専門用語を文脈から推測して正式表記に変換済み
-"""
-    
-    try:
-        with st.spinner("Claudeが議事録を生成中..."):
-            # Bedrock API リクエスト
-            body = json.dumps({
-                "anthropic_version": "bedrock-2023-05-31",
-                "max_tokens": 4000,
-                "messages": [{
-                    "role": "user",
-                    "content": prompt
-                }]
-            })
-            
-            response = bedrock.invoke_model(
-                modelId="us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-                body=body
-            )
-            
-            response_body = json.loads(response['body'].read())
-            return response_body['content'][0]['text']
-    
-    except Exception as e:
-        st.error(f"❌ エラーが発生しました: {str(e)}")
-        return None
-
-if st.button("🚀 議事録を生成", type="primary", disabled=not transcript_input):
+if st.button("🚀 議事録を生成", type="primary", disabled=True):
     if not transcript_input:
         st.error("⚠️ 文字起こしデータを入力してください")
     else:
@@ -245,7 +178,7 @@ if st.button("🚀 議事録を生成", type="primary", disabled=not transcript_
                 mime="text/markdown"
             )
         else:
-            # エラー時のデモ表示
+            st.info("💡 この機能は休止中です。以下は生成される議事録のイメージです。")
             with st.expander("📋 生成される議事録のイメージ（デモ）"):
                 st.markdown(f"""
 ### 議事録
